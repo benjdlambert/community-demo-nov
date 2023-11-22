@@ -39,24 +39,48 @@ spec:
     - title: Configure Deployment
       required:
         - domain
-        - containerPort
-        - containerName
       properties:
+        deploymentType:
+          title: Deployment Type
+          type: string
+          enum:
+            - kubernetes
+            - terraform
+          default: kubernetes
         domain:
           title: Domain name
           type: string
           description: The hostname that this service will be deployed to
           default: test.example.com
-        containerPort:
-          title: Container Port
-          type: number
-          description: The port that the service will listen on
-          default: 8080
-        containerName:
-          title: Container Name
-          type: string
-          description: The name of the container
-          default: example-nodejs-template
+      if:
+        properties:
+          deploymentType:
+            const: kubernetes
+      then:
+        properties:
+          memoryLimit:
+            title: Memory Limit
+            type: string
+            description: The maximum amount of memory that the container can use
+            default: 512Mi
+          cpuLimit:
+            title: CPU Limit
+            type: string
+            description: The maximum amount of CPU that the container can use
+            default: 500m
+      else:
+        properties: 
+          containerPort:
+            title: Container Port
+            type: number
+            description: The port that the service will listen on
+            default: 8080
+          containerName:
+            title: Container Name
+            type: string
+            description: The name of the container
+            default: example-nodejs-template
+      
         
 
   # These steps are executed in the scaffolder backend, using data that we gathered
