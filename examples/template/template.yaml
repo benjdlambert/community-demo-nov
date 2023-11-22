@@ -6,7 +6,7 @@ metadata:
   title: Example Node.js Template
   description: An example template for the scaffolder that creates a simple Node.js service
 spec:
-  owner: user:guest
+  owner: guest
   type: service
 
   # These parameters are used to generate the input form in the frontend, and are
@@ -23,6 +23,7 @@ spec:
           ui:autofocus: true
           ui:options:
             rows: 5
+
     - title: Choose a location
       required:
         - repoUrl
@@ -35,6 +36,29 @@ spec:
             allowedHosts:
               - github.com
 
+    - title: Configure Deployment
+      required:
+        - domain
+        - containerPort
+        - containerName
+      properties:
+        domain:
+          title: Domain name
+          type: string
+          description: The hostname that this service will be deployed to
+          default: test.example.com
+        containerPort:
+          title: Container Port
+          type: number
+          description: The port that the service will listen on
+          default: 8080
+        containerName:
+          title: Container Name
+          type: string
+          description: The name of the container
+          default: example-nodejs-template
+        
+
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
   steps:
@@ -44,8 +68,7 @@ spec:
       action: fetch:template
       input:
         url: ./content
-        values:
-          name: ${{ parameters.name }}
+        values: ${{ parameters }}
 
     # This step publishes the contents of the working directory to GitHub.
     - id: publish
